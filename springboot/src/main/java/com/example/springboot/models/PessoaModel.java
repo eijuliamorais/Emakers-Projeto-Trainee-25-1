@@ -5,11 +5,14 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.CascadeType;
 
 
 import java.io.Serializable;
+import java.util.List;
 
 
 @Entity
@@ -26,6 +29,9 @@ public class PessoaModel implements Serializable {
     private String telefone;
     private String cep;
     private String cpf;
+
+    @OneToMany  (mappedBy = "pessoa", cascade = CascadeType.ALL)
+    private List<EmprestimoModel> emprestimos;
 }
 
 

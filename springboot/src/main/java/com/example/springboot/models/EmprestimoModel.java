@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import java.io.Serializable;
@@ -25,17 +25,17 @@ public class EmprestimoModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idEmprestimo;
-    
-    @ManyToMany
-    @JoinColumn(name = "livro_id")
-    private LivroModel livro;
-
-    @ManyToMany
-    @JoinColumn(name = "usuario_id")
-    private PessoaModel usuario;
 
     private Date dataEmprestimo;
     private Date dataDevolucao;
     private boolean ativo;
+
+    @ManyToOne
+    @JoinColumn(name = "id_pessoa") 
+    private PessoaModel pessoa;
+
+    @ManyToOne
+    @JoinColumn(name = "id_livro")
+    private LivroModel livro;
 
 }
