@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType;
 
 
 import java.io.Serializable;
-import java.util.UUID;
+
 
 @Entity
 @Getter
@@ -20,7 +20,7 @@ public class PessoaModel implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID idPessoa;
+    private long idPessoa;
     private String nome;
     private String email;
     private String telefone;
