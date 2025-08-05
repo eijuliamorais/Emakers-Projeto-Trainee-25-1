@@ -1,5 +1,10 @@
 package com.example.springboot.dtos;
 
-public record LoginResponseDto(String token) {
-    
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class LoginResponseDto {
+    private String token;
 }

@@ -1,6 +1,6 @@
 package com.example.springboot.config.security;
 
-//import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,11 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfigurations {
 
-    private final SecurityFilter securityFilter;
-
-    public SecurityConfigurations(SecurityFilter securityFilter) {
-        this.securityFilter = securityFilter;
-    }
+    @Autowired
+    private SecurityFilter securityFilter;
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
