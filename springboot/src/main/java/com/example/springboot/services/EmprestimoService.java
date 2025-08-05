@@ -21,7 +21,7 @@ public class EmprestimoService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
-    // Método para realizar um empréstimo
+    // Método para realizar um empréstimo POST
     public EmprestimoModel realizarEmprestimo(long idLivro, long idPessoa) {
         var livro = livroRepository.findById(idLivro)
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
@@ -43,7 +43,7 @@ public class EmprestimoService {
         return emprestimoRepository.save(emprestimo);
     }
 
-    // Método para devolver um livro
+    // Método para devolver um livro PUT
     public EmprestimoModel devolverLivro(long idEmprestimo) {
         var emprestimo = emprestimoRepository.findById(idEmprestimo)
                 .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
@@ -58,50 +58,44 @@ public class EmprestimoService {
 
     }
 
-    // Método para listar todos os empréstimos
+    // Método para listar todos os empréstimos GET
     public List<EmprestimoModel> listarEmprestimos() {
         return emprestimoRepository.findAll();
     }
 
-    // Método para buscar um empréstimo por ID
+    // Método para buscar um empréstimo por ID GET
     public EmprestimoModel buscarEmprestimoPorId(long id) {
         return emprestimoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
     }   
 
-    // Método para listar empréstimos ativos
+    // Método para listar empréstimos ativos GET
     public List<EmprestimoModel> listarEmprestimosAtivos() {    
         return emprestimoRepository.findAll().stream()
                 .filter(EmprestimoModel::isAtivo)
                 .toList();
     }
 
-    // Método para listar empréstimos por pessoa
+    // Método para listar empréstimos por pessoa GET
     public List<EmprestimoModel> listarEmprestimosPorPessoa(long idPessoa) {
         return emprestimoRepository.findAll().stream()
                 .filter(emprestimo -> emprestimo.getPessoa().getIdPessoa() == idPessoa)
                 .toList();
     }
 
-    // Método para listar empréstimos por livro
+    // Método para listar empréstimos por livro GET
     public List<EmprestimoModel> listarEmprestimosPorLivro(long idLivro){
         return emprestimoRepository.findAll().stream()
                 .filter(emprestimo -> emprestimo.getLivro().getIdLivro() == idLivro)
                 .toList();
     }
 
-    // Método para verificar se um livro está emprestado
+    // Método para verificar se um livro está emprestado 
     public boolean LivroEmprestado(long idLivro) {
         return emprestimoRepository.existsByLivroAndAtivo(livroRepository.findById(idLivro)
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado")), true);
     }
     
-    // Método para deletar um empréstimo
-    public void deleteEmprestimo(long id) {
-        var emprestimo = emprestimoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
-        emprestimoRepository.delete(emprestimo);
-    }
 
 
 

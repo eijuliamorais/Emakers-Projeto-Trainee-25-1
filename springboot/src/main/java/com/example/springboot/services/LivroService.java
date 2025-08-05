@@ -21,7 +21,7 @@ public class LivroService {
     @Autowired
     private LivroRepository livroRepository;
 
-    // Método para salvar um livro
+    // Método para salvar um livro POST
     public LivroModel saveLivro (LivroRecordDto livroRecordDto) {
         var livroModel = new LivroModel();
         BeanUtils.copyProperties(livroRecordDto, livroModel);
@@ -29,12 +29,12 @@ public class LivroService {
     }
 
 
-    // Método para listar todos os livro
+    // Método para listar todos os livro GET
     public List<LivroModel> listaTodos() {
         return livroRepository.findAll();
     }
 
-    // Método para listar um livro
+    // Método para listar um livro GET
     public LivroModel getLivroById(@PathVariable long id) {
         Optional<LivroModel> livroModelOptional = livroRepository.findById(id);
         if (!livroModelOptional.isPresent()) {
@@ -43,7 +43,7 @@ public class LivroService {
         return livroModelOptional.get();
     }
 
-    // Método para atualizar um livro
+    // Método para atualizar um livro PUT
     public LivroModel updateLivro(long id, LivroRecordDto livroRecordDto) {
         Optional<LivroModel> livroModelOptional = livroRepository.findById(id);
         if (!livroModelOptional.isPresent()) {
@@ -54,7 +54,7 @@ public class LivroService {
         return livroRepository.save(livroModel);
     }
 
-    // Método para deletar um livro
+    // Método para deletar um livro DELETE
     public void deleteLivro(long id) {
         Optional<LivroModel> livroModelOptional = livroRepository.findById(id);
         if (!livroModelOptional.isPresent()) {

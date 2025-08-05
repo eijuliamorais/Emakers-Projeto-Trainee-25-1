@@ -19,7 +19,7 @@ public class PessoaService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
-    // Método para salvar um pessoa
+    // Método para salvar um pessoa POST
     public PessoaModel savePessoa (PessoaRecordDto pessoaRecordDto) {
         var pessoaModel = new PessoaModel();
         BeanUtils.copyProperties(pessoaRecordDto, pessoaModel);
@@ -27,12 +27,12 @@ public class PessoaService {
     }
 
 
-    // Método para listar todos os pessoa
+    // Método para listar todos os pessoa GET
     public List<PessoaModel> listaTodos() {
         return pessoaRepository.findAll();
     }
 
-    // Método para listar um pessoa
+    // Método para listar um pessoa GET
     public PessoaModel getPessoaById(@PathVariable long id) {
         Optional<PessoaModel> pessoaModelOptional = pessoaRepository.findById(id);
         if (!pessoaModelOptional.isPresent()) {
@@ -41,7 +41,7 @@ public class PessoaService {
         return pessoaModelOptional.get();
     }
 
-    // Método para atualizar um pessoa
+    // Método para atualizar um pessoa PUT
     public PessoaModel updatePessoa(long id, PessoaRecordDto pessoaRecordDto) {
         Optional<PessoaModel> pessoaModelOptional = pessoaRepository.findById(id);
         if (!pessoaModelOptional.isPresent()) {
@@ -52,7 +52,7 @@ public class PessoaService {
         return pessoaRepository.save(pessoaModel);
     }
 
-    // Método para deletar um pessoa
+    // Método para deletar um pessoa DELETE
     public void deletePessoa(long id) {
         Optional<PessoaModel> pessoaModelOptional = pessoaRepository.findById(id);
         if (!pessoaModelOptional.isPresent()) {

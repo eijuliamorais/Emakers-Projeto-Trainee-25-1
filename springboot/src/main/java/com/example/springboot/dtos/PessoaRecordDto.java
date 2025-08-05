@@ -8,7 +8,10 @@ public record PessoaRecordDto(
     @NotBlank @Email String email,
     String telefone,
     @NotBlank String cpf,
-    String cep
+    String cep,
+    @NotBlank String cargo,
+    @NotBlank String senha
+
 ) {
     
 }

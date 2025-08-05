@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import java.util.List;
 
 
@@ -88,15 +87,5 @@ public class EmprestimoController {
         return ResponseEntity.ok(isEmprestado);
     }
 
-    // Método para deletar um empréstimo
-    @DeleteMapping("/emprestimos/{id}")
-    public ResponseEntity<Object> deleteEmprestimo(@PathVariable Long id) {
-        try {
-            emprestimoService.deleteEmprestimo(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
 
 }
