@@ -11,6 +11,7 @@ import com.example.springboot.models.enums.PessoaCargo;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -48,7 +49,7 @@ public class PessoaModel implements UserDetails {
         
     }
 
-    @OneToMany  (mappedBy = "pessoa", cascade = CascadeType.ALL)
+    @OneToMany  (mappedBy = "pessoa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EmprestimoModel> emprestimos;
 
     @Override

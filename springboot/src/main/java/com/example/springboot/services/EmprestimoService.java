@@ -1,5 +1,8 @@
 package com.example.springboot.services;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,9 +10,6 @@ import com.example.springboot.models.EmprestimoModel;
 import com.example.springboot.repositories.EmprestimoRepository;
 import com.example.springboot.repositories.LivroRepository;
 import com.example.springboot.repositories.PessoaRepository;
-
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class EmprestimoService {
@@ -22,7 +22,7 @@ public class EmprestimoService {
     private PessoaRepository pessoaRepository;
 
     // Método para realizar um empréstimo POST
-    public EmprestimoModel realizarEmprestimo(long idLivro, long idPessoa) {
+    public EmprestimoModel realizarEmprestimo(Long idLivro, Long idPessoa) {
         var livro = livroRepository.findById(idLivro)
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
         var pessoa = pessoaRepository.findById(idPessoa)
