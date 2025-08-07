@@ -21,10 +21,23 @@ public class PessoaService {
     @Autowired
     private PessoaRepository pessoaRepository;
 
+     @Autowired
+    private ViaCepService viaCepService;
+
     // Método para salvar um pessoa POST
     public PessoaResponseDto savePessoa (PessoaRecordDto pessoaRecordDto) {
         var pessoaModel = new PessoaModel();
         BeanUtils.copyProperties(pessoaRecordDto, pessoaModel);
+
+        var endereco = viaCepService.buscaCepResponseDto(pessoaRecordDto.cep());
+        if (endereco != null) {
+            pessoaModel.setLogradouro(endereco.logradouro());
+            pessoaModel.setComplemento(endereco.complemento());
+            pessoaModel.setBairro(endereco.bairro());
+            pessoaModel.setLocalidade(endereco.localidade());
+            pessoaModel.setUf(endereco.uf());
+        }
+
         PessoaModel savedPessoa = pessoaRepository.save(pessoaModel);
         return new PessoaResponseDto(
             savedPessoa.getIdPessoa(),
@@ -33,7 +46,12 @@ public class PessoaService {
             savedPessoa.getTelefone(),
             savedPessoa.getCep(),
             savedPessoa.getCpf(),
-            savedPessoa.getCargo()
+            savedPessoa.getCargo(),
+            savedPessoa.getLogradouro(),
+            savedPessoa.getComplemento(),
+            savedPessoa.getBairro(),
+            savedPessoa.getLocalidade(),
+            savedPessoa.getUf()
         );
     }
 
@@ -48,7 +66,12 @@ public class PessoaService {
                 pessoa.getTelefone(),
                 pessoa.getCep(),
                 pessoa.getCpf(),
-                pessoa.getCargo()
+                pessoa.getCargo(),
+                pessoa.getLogradouro(),
+                pessoa.getComplemento(),
+                pessoa.getBairro(),
+                pessoa.getLocalidade(),
+                pessoa.getUf()
             ))
             .collect(Collectors.toList());
     }
@@ -66,7 +89,13 @@ public class PessoaService {
             pessoaModelOptional.get().getTelefone(),
             pessoaModelOptional.get().getCep(),
             pessoaModelOptional.get().getCpf(),
-            pessoaModelOptional.get().getCargo()
+            pessoaModelOptional.get().getCargo(),
+            pessoaModelOptional.get().getLogradouro(),
+            pessoaModelOptional.get().getComplemento(),
+            pessoaModelOptional.get().getBairro(),
+            pessoaModelOptional.get().getLocalidade(),
+            pessoaModelOptional.get().getUf()
+
         );
     }
 
@@ -78,6 +107,16 @@ public class PessoaService {
         }
         PessoaModel pessoaModel = pessoaModelOptional.get();
         BeanUtils.copyProperties(pessoaRecordDto, pessoaModel);
+
+        var endereco = viaCepService.buscaCepResponseDto(pessoaRecordDto.cep());
+        if (endereco != null) {
+            pessoaModel.setLogradouro(endereco.logradouro());
+            pessoaModel.setComplemento(endereco.complemento());
+            pessoaModel.setBairro(endereco.bairro());
+            pessoaModel.setLocalidade(endereco.localidade());
+            pessoaModel.setUf(endereco.uf());
+        }
+
         PessoaModel uptadPessoaModel = pessoaRepository.save(pessoaModel);
 
         return new PessoaResponseDto(
@@ -87,7 +126,12 @@ public class PessoaService {
             uptadPessoaModel.getTelefone(),
             uptadPessoaModel.getCep(),
             uptadPessoaModel.getCpf(),
-            uptadPessoaModel.getCargo()
+            uptadPessoaModel.getCargo(),
+            uptadPessoaModel.getLogradouro(),
+            uptadPessoaModel.getComplemento(),
+            uptadPessoaModel.getBairro(),
+            uptadPessoaModel.getLocalidade(),
+            uptadPessoaModel.getUf()
         );
     }
 

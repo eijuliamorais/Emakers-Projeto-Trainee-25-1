@@ -10,17 +10,13 @@ public record PessoaResponseDto(
     String telefone,
     String cep,
     String cpf,
-    PessoaCargo cargo
-) {
+    PessoaCargo cargo,
+    String logradouro, 
+    String complemento,
+    String bairro,
+    String localidade, 
+    String uf 
+) {}
     
-    public PessoaResponseDto(Long id, String nome, String email, String telefone, String cep, String cpf, PessoaCargo cargo) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.telefone = telefone;
-        this.cep = cep;
-        this.cpf = cpf;
-        this.cargo = cargo;
-    }
-}
+
 

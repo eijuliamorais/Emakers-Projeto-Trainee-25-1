@@ -12,7 +12,8 @@ public record PessoaRecordDto(
     @NotBlank String cpf,
     String cep,
     PessoaCargo cargo,
-    @NotBlank String senha
+    @NotBlank String senha 
+
 
 ) {
     

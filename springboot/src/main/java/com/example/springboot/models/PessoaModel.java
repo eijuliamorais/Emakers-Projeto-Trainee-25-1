@@ -39,6 +39,11 @@ public class PessoaModel implements UserDetails {
     private String cep;
     private String cpf;
     private PessoaCargo cargo;
+    private String logradouro;
+    private String complemento;
+    private String bairro;
+    private String localidade;
+    private String uf;
 
     public PessoaModel() {
     }
