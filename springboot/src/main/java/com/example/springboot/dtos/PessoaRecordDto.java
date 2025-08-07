@@ -1,7 +1,9 @@
 package com.example.springboot.dtos;
 
-import jakarta.validation.constraints.NotBlank;
+import com.example.springboot.models.enums.PessoaCargo;
+
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public record PessoaRecordDto(
     @NotBlank String nome,
@@ -9,7 +11,7 @@ public record PessoaRecordDto(
     String telefone,
     @NotBlank String cpf,
     String cep,
-    @NotBlank String cargo,
+    PessoaCargo cargo,
     @NotBlank String senha
 
 ) {

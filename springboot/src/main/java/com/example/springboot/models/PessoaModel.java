@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.example.springboot.models.enums.PessoaCargo;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ public class PessoaModel implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idPessoa;
     private String nome;
+    @Column(unique = true)
     private String email;
     private String senha;
     private String telefone;

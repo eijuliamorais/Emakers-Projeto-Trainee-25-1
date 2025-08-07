@@ -1,7 +1,7 @@
 package com.example.springboot.models;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -31,7 +31,7 @@ public class LivroModel implements Serializable {
     private long idLivro;
     private String titulo;
     private String autor;
-    private Date dataPublicacao;
+    private LocalDate dataPublicacao;
     private String editora;
     private String genero;
 

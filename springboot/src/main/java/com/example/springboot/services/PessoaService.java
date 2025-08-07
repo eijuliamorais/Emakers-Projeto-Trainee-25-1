@@ -1,17 +1,18 @@
 package com.example.springboot.services;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.example.springboot.repositories.PessoaRepository;
 import com.example.springboot.dtos.PessoaRecordDto;
+import com.example.springboot.dtos.PessoaResponseDto;
 import com.example.springboot.models.PessoaModel;
-
-
-import java.util.List;
-import java.util.Optional;
+import com.example.springboot.repositories.PessoaRepository;
 
 @Service
 public class PessoaService {
@@ -20,36 +21,73 @@ public class PessoaService {
     private PessoaRepository pessoaRepository;
 
     // Método para salvar um pessoa POST
-    public PessoaModel savePessoa (PessoaRecordDto pessoaRecordDto) {
+    public PessoaResponseDto savePessoa (PessoaRecordDto pessoaRecordDto) {
         var pessoaModel = new PessoaModel();
         BeanUtils.copyProperties(pessoaRecordDto, pessoaModel);
-        return pessoaRepository.save(pessoaModel);
+        PessoaModel savedPessoa = pessoaRepository.save(pessoaModel);
+        return new PessoaResponseDto(
+            savedPessoa.getIdPessoa(),
+            savedPessoa.getNome(),
+            savedPessoa.getEmail(),
+            savedPessoa.getTelefone(),
+            savedPessoa.getCep(),
+            savedPessoa.getCpf(),
+            savedPessoa.getCargo()
+        );
     }
 
 
     // Método para listar todos os pessoa GET
-    public List<PessoaModel> listaTodos() {
-        return pessoaRepository.findAll();
+    public List<PessoaResponseDto> listaTodos() {
+        return pessoaRepository.findAll().stream()
+            .map(pessoa -> new PessoaResponseDto(
+                pessoa.getIdPessoa(),
+                pessoa.getNome(),
+                pessoa.getEmail(),
+                pessoa.getTelefone(),
+                pessoa.getCep(),
+                pessoa.getCpf(),
+                pessoa.getCargo()
+            ))
+            .collect(Collectors.toList());
     }
 
     // Método para listar um pessoa GET
-    public PessoaModel getPessoaById(@PathVariable long id) {
+    public PessoaResponseDto getPessoaById(@PathVariable long id) {
         Optional<PessoaModel> pessoaModelOptional = pessoaRepository.findById(id);
         if (!pessoaModelOptional.isPresent()) {
             throw new RuntimeException("Pessoa não encontrada");
         }
-        return pessoaModelOptional.get();
+        return new PessoaResponseDto(
+            pessoaModelOptional.get().getIdPessoa(),
+            pessoaModelOptional.get().getNome(),
+            pessoaModelOptional.get().getEmail(),
+            pessoaModelOptional.get().getTelefone(),
+            pessoaModelOptional.get().getCep(),
+            pessoaModelOptional.get().getCpf(),
+            pessoaModelOptional.get().getCargo()
+        );
     }
 
     // Método para atualizar um pessoa PUT
-    public PessoaModel updatePessoa(long id, PessoaRecordDto pessoaRecordDto) {
+    public PessoaResponseDto updatePessoa(long id, PessoaRecordDto pessoaRecordDto) {
         Optional<PessoaModel> pessoaModelOptional = pessoaRepository.findById(id);
         if (!pessoaModelOptional.isPresent()) {
             throw new RuntimeException("Pessoa não encontrada");
         }
-        var pessoaModel = pessoaModelOptional.get();
+        PessoaModel pessoaModel = pessoaModelOptional.get();
         BeanUtils.copyProperties(pessoaRecordDto, pessoaModel);
-        return pessoaRepository.save(pessoaModel);
+        PessoaModel uptadPessoaModel = pessoaRepository.save(pessoaModel);
+
+        return new PessoaResponseDto(
+            uptadPessoaModel.getIdPessoa(),
+            uptadPessoaModel.getNome(),
+            uptadPessoaModel.getEmail(),
+            uptadPessoaModel.getTelefone(),
+            uptadPessoaModel.getCep(),
+            uptadPessoaModel.getCpf(),
+            uptadPessoaModel.getCargo()
+        );
     }
 
     // Método para deletar um pessoa DELETE

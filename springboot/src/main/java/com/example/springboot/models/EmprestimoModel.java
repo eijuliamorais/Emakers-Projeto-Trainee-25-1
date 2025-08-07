@@ -1,9 +1,13 @@
 package com.example.springboot.models;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+
+import com.example.springboot.models.enums.EmprestimoStatus;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,10 +28,11 @@ public class EmprestimoModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idEmprestimo;
-
-    private Date dataEmprestimo;
-    private Date dataDevolucao;
-    private boolean ativo;
+    private LocalDate dataEmprestimo;
+    private LocalDate dataDevolucao;
+    private LocalDate previsaoDevolucao;
+    @Enumerated(EnumType.STRING)
+    private EmprestimoStatus status;
 
     @ManyToOne
     @JoinColumn(name = "id_pessoa") 
@@ -36,5 +41,6 @@ public class EmprestimoModel implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_livro")
     private LivroModel livro;
+
 
 }
