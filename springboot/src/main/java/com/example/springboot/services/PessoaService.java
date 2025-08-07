@@ -7,12 +7,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.springboot.dtos.PessoaRecordDto;
 import com.example.springboot.dtos.PessoaResponseDto;
 import com.example.springboot.models.PessoaModel;
 import com.example.springboot.repositories.PessoaRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PessoaService {
@@ -53,10 +54,10 @@ public class PessoaService {
     }
 
     // Método para listar um pessoa GET
-    public PessoaResponseDto getPessoaById(@PathVariable long id) {
+    public PessoaResponseDto getPessoaById(long id) {
         Optional<PessoaModel> pessoaModelOptional = pessoaRepository.findById(id);
         if (!pessoaModelOptional.isPresent()) {
-            throw new RuntimeException("Pessoa não encontrada");
+            throw new EntityNotFoundException("Pessoa com id " + id + " não encontrada");
         }
         return new PessoaResponseDto(
             pessoaModelOptional.get().getIdPessoa(),
@@ -73,7 +74,7 @@ public class PessoaService {
     public PessoaResponseDto updatePessoa(long id, PessoaRecordDto pessoaRecordDto) {
         Optional<PessoaModel> pessoaModelOptional = pessoaRepository.findById(id);
         if (!pessoaModelOptional.isPresent()) {
-            throw new RuntimeException("Pessoa não encontrada");
+            throw new EntityNotFoundException("Pessoa com id " + id + " não encontrada");
         }
         PessoaModel pessoaModel = pessoaModelOptional.get();
         BeanUtils.copyProperties(pessoaRecordDto, pessoaModel);
@@ -94,7 +95,7 @@ public class PessoaService {
     public void deletePessoa(long id) {
         Optional<PessoaModel> pessoaModelOptional = pessoaRepository.findById(id);
         if (!pessoaModelOptional.isPresent()) {
-            throw new RuntimeException("Pessoa não encontrada");
+            throw new EntityNotFoundException("Pessoa com id " + id + " não encontrada");
         }
         pessoaRepository.delete(pessoaModelOptional.get());
     }

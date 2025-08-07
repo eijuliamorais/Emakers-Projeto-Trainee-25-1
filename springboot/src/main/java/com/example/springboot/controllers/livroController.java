@@ -41,32 +41,20 @@ public class livroController {
 
     @GetMapping("/livros/{id}") // Método para listar um livro por ID
     public ResponseEntity<Object> getPessoaById(@PathVariable (value = "id") long id) {
-        try {
             LivroResponseDto livro = livroService.getLivroById(id);
             return ResponseEntity.ok(livro);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
     
     @PutMapping("/livros/{id}") // Método para atualizar um livro
     public ResponseEntity<Object> updateLivro(@PathVariable (value = "id")  long id, @RequestBody @Valid LivroRecordDto livroRecordDto) {
-        try {
             LivroResponseDto livro = livroService.updateLivro(id, livroRecordDto);
             return ResponseEntity.ok(livro);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
     
     @DeleteMapping("livros/{id}") // Método para deletar um livro
     public ResponseEntity<Object> deleteLivro(@PathVariable(value = "id") long id) {
-        try {
             livroService.deleteLivro(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }    
     }
 
 }

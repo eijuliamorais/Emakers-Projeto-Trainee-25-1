@@ -8,12 +8,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.springboot.dtos.LivroRecordDto;
 import com.example.springboot.dtos.LivroResponseDto;
 import com.example.springboot.models.LivroModel;
 import com.example.springboot.repositories.LivroRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 
 
@@ -54,10 +55,10 @@ public class LivroService {
     }
 
     // Método para listar um livro GET
-    public LivroResponseDto getLivroById(@PathVariable long id) {
+    public LivroResponseDto getLivroById(long id) {
         Optional<LivroModel> livroModelOptional = livroRepository.findById(id);
         if (!livroModelOptional.isPresent()) {
-            throw new RuntimeException("Livro não encontrado");
+            throw new EntityNotFoundException("Livro com id " + id + " não encontrado");
         }
         return new LivroResponseDto(
             livroModelOptional.get().getIdLivro(),
@@ -73,7 +74,7 @@ public class LivroService {
     public LivroResponseDto updateLivro(long id, LivroRecordDto livroRecordDto) {
         Optional<LivroModel> livroModelOptional = livroRepository.findById(id);
         if (!livroModelOptional.isPresent()) {
-            throw new RuntimeException("Livro não encontrado");
+            throw new EntityNotFoundException("Livro com id " + id + " não encontrado");
         }
         LivroModel livroModel = livroModelOptional.get();
         BeanUtils.copyProperties(livroRecordDto, livroModel);
@@ -92,7 +93,7 @@ public class LivroService {
     public void deleteLivro(long id) {
         Optional<LivroModel> livroModelOptional = livroRepository.findById(id);
         if (!livroModelOptional.isPresent()) {
-            throw new RuntimeException("Livro não encontrado");
+            throw new EntityNotFoundException("Livro com id " + id + " não encontrado");
         }
         livroRepository.delete(livroModelOptional.get());
     }

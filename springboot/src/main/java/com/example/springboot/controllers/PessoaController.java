@@ -41,33 +41,20 @@ public class PessoaController {
 
     @GetMapping("/pessoas/{id}")
     public ResponseEntity<Object> getPessoaById(@PathVariable (value = "id") long id) {
-       try {
             PessoaResponseDto pessoa = pessoaService.getPessoaById(id);
             return ResponseEntity.ok(pessoa);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
     
     @PutMapping("/pessoas/{id}")
     public ResponseEntity<Object> updatePessoa(@PathVariable (value = "id")  long id, @RequestBody @Valid PessoaRecordDto pessoaRecordDto) {
-        try {
             PessoaResponseDto pessoa = pessoaService.updatePessoa(id, pessoaRecordDto);
-
             return ResponseEntity.ok(pessoa);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
     
     @DeleteMapping("/pessoas/{id}")
     public ResponseEntity<Object> deletePessoa(@PathVariable (value = "id") long id){
-        try {
             pessoaService.deletePessoa(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } 
     }
 
 }
