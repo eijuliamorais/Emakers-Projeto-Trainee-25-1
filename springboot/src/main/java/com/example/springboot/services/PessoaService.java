@@ -39,40 +39,14 @@ public class PessoaService {
         }
 
         PessoaModel savedPessoa = pessoaRepository.save(pessoaModel);
-        return new PessoaResponseDto(
-            savedPessoa.getIdPessoa(),
-            savedPessoa.getNome(),
-            savedPessoa.getEmail(),
-            savedPessoa.getTelefone(),
-            savedPessoa.getCep(),
-            savedPessoa.getCpf(),
-            savedPessoa.getCargo(),
-            savedPessoa.getLogradouro(),
-            savedPessoa.getComplemento(),
-            savedPessoa.getBairro(),
-            savedPessoa.getLocalidade(),
-            savedPessoa.getUf()
-        );
+        return  converterParaResponseDto(savedPessoa);
     }
 
 
     // Método para listar todos os pessoa GET
     public List<PessoaResponseDto> listaTodos() {
         return pessoaRepository.findAll().stream()
-            .map(pessoa -> new PessoaResponseDto(
-                pessoa.getIdPessoa(),
-                pessoa.getNome(),
-                pessoa.getEmail(),
-                pessoa.getTelefone(),
-                pessoa.getCep(),
-                pessoa.getCpf(),
-                pessoa.getCargo(),
-                pessoa.getLogradouro(),
-                pessoa.getComplemento(),
-                pessoa.getBairro(),
-                pessoa.getLocalidade(),
-                pessoa.getUf()
-            ))
+            .map(this::converterParaResponseDto)
             .collect(Collectors.toList());
     }
 
@@ -82,21 +56,7 @@ public class PessoaService {
         if (!pessoaModelOptional.isPresent()) {
             throw new EntityNotFoundException("Pessoa com id " + id + " não encontrada");
         }
-        return new PessoaResponseDto(
-            pessoaModelOptional.get().getIdPessoa(),
-            pessoaModelOptional.get().getNome(),
-            pessoaModelOptional.get().getEmail(),
-            pessoaModelOptional.get().getTelefone(),
-            pessoaModelOptional.get().getCep(),
-            pessoaModelOptional.get().getCpf(),
-            pessoaModelOptional.get().getCargo(),
-            pessoaModelOptional.get().getLogradouro(),
-            pessoaModelOptional.get().getComplemento(),
-            pessoaModelOptional.get().getBairro(),
-            pessoaModelOptional.get().getLocalidade(),
-            pessoaModelOptional.get().getUf()
-
-        );
+        return converterParaResponseDto(pessoaModelOptional.get());
     }
 
     // Método para atualizar um pessoa PUT
@@ -119,20 +79,7 @@ public class PessoaService {
 
         PessoaModel uptadPessoaModel = pessoaRepository.save(pessoaModel);
 
-        return new PessoaResponseDto(
-            uptadPessoaModel.getIdPessoa(),
-            uptadPessoaModel.getNome(),
-            uptadPessoaModel.getEmail(),
-            uptadPessoaModel.getTelefone(),
-            uptadPessoaModel.getCep(),
-            uptadPessoaModel.getCpf(),
-            uptadPessoaModel.getCargo(),
-            uptadPessoaModel.getLogradouro(),
-            uptadPessoaModel.getComplemento(),
-            uptadPessoaModel.getBairro(),
-            uptadPessoaModel.getLocalidade(),
-            uptadPessoaModel.getUf()
-        );
+        return converterParaResponseDto(uptadPessoaModel);
     }
 
     // Método para deletar um pessoa DELETE
@@ -144,6 +91,22 @@ public class PessoaService {
         pessoaRepository.delete(pessoaModelOptional.get());
     }
 
+    private PessoaResponseDto converterParaResponseDto(PessoaModel p){
+        return new PessoaResponseDto(
+            p.getIdPessoa(),
+            p.getNome(),
+            p.getEmail(),
+            p.getTelefone(),
+            p.getCep(),
+            p.getCpf(),
+            p.getCargo(),
+            p.getLogradouro(),
+            p.getComplemento(),
+            p.getBairro(),
+            p.getLocalidade(),
+            p.getUf()
+        );
+    }
     
 
 }

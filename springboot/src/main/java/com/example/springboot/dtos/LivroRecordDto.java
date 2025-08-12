@@ -9,7 +9,8 @@ public record LivroRecordDto(
     String autor,
     LocalDate dataPublicacao,
     String editora,
-    String genero
+    String genero,
+    Integer quantidade
 ) {
     
 }

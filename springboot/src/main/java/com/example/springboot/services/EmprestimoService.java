@@ -38,18 +38,18 @@ public class EmprestimoService {
         LivroModel livro = livroRepository.findById(dto.idLivro())
             .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
 
-        // Verificar se o livro já está emprestado
-        boolean livroEmprestado = emprestimoRepository.existsByLivroAndStatus(livro, EmprestimoStatus.EMPRESTADO);
-        if (livroEmprestado) {
-            throw new IllegalStateException("Livro já está emprestado");
+        if (livro.getQuantidade() <= 0) {
+            throw new IllegalStateException("Não há exemplares disponíveis para empréstimo");
         }
+
+        livro.setQuantidade(livro.getQuantidade()-1);
+        livroRepository.save(livro);
 
         // Criar modelo de empréstimo
         EmprestimoModel emprestimo = new EmprestimoModel();
         emprestimo.setLivro(livro);
         emprestimo.setPessoa(pessoa);
         emprestimo.setDataEmprestimo(dto.dataEmprestimo());
-        emprestimo.setDataDevolucao(dto.dataDevolucao());
         emprestimo.setPrevisaoDevolucao(dto.previsaoDevolucao().plusDays(7));
         emprestimo.setStatus(dto.status() != null ? dto.status() : EmprestimoStatus.EMPRESTADO);
 
@@ -57,52 +57,49 @@ public class EmprestimoService {
         EmprestimoModel salvo = emprestimoRepository.save(emprestimo);
 
         // Criar DTO de resposta
-        return new EmprestimoResponseDto(
-            salvo.getIdEmprestimo(),
-            salvo.getPessoa().getNome(),
-            salvo.getLivro().getTitulo(),
-            salvo.getDataEmprestimo(),
-            salvo.getDataDevolucao(),
-            salvo.getPrevisaoDevolucao(),
-            salvo.getStatus()
-        );
+        return converterParaResponseDto(salvo);
     }
 
  
     // Método para devolver um livro PUT
-public EmprestimoResponseDto marcarComoDevolvido(Long id) {
+    public EmprestimoResponseDto marcarComoDevolvido(Long id) {
     EmprestimoModel emprestimo = emprestimoRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
 
     emprestimo.setDataDevolucao(LocalDate.now());
     emprestimo.setStatus(EmprestimoStatus.DEVOLVIDO);
+
+    LivroModel livro = emprestimo.getLivro();
+    livro.setQuantidade(livro.getQuantidade() +1);
+    livroRepository.save(livro);
     
     emprestimo = emprestimoRepository.save(emprestimo);
 
     return converterParaResponseDto(emprestimo);
-}
+    }
 
-public List<EmprestimoResponseDto> listarTodos() {
+    public List<EmprestimoResponseDto> listarTodos() {
     return emprestimoRepository.findAll().stream()
         .map(this::converterParaResponseDto)
         .toList();
-}
+    }
 
-public List<EmprestimoResponseDto> listarPorStatus(EmprestimoStatus status) {
+    public List<EmprestimoResponseDto> listarPorStatus(EmprestimoStatus status) {
     return emprestimoRepository.findByStatus(status).stream()
+        .filter(e -> calcularStatusAtual(e) == status)
         .map(this::converterParaResponseDto)
         .toList();
-}
+    }
 
-public EmprestimoResponseDto buscarPorId(Long id) {
+    public EmprestimoResponseDto buscarPorId(Long id) {
     EmprestimoModel emprestimo = emprestimoRepository.findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
 
     return converterParaResponseDto(emprestimo);
-}
+    }
 
-// Método auxiliar para reaproveitar conversão
-private EmprestimoResponseDto converterParaResponseDto(EmprestimoModel e) {
+
+    private EmprestimoResponseDto converterParaResponseDto(EmprestimoModel e) {
     return new EmprestimoResponseDto(
         e.getIdEmprestimo(),
         e.getPessoa().getNome(),
@@ -110,8 +107,18 @@ private EmprestimoResponseDto converterParaResponseDto(EmprestimoModel e) {
         e.getDataEmprestimo(),
         e.getDataDevolucao(),
         e.getPrevisaoDevolucao(),
-        e.getStatus()
+        calcularStatusAtual(e)
     );
-}
+    }
+
+    private EmprestimoStatus calcularStatusAtual (EmprestimoModel emprestimo){
+        if(emprestimo.getStatus() == EmprestimoStatus.DEVOLVIDO){
+            return EmprestimoStatus.DEVOLVIDO;
+        }
+        if(emprestimo.getPrevisaoDevolucao() != null && LocalDate.now().isAfter(emprestimo.getPrevisaoDevolucao())){
+            return EmprestimoStatus.ATRASADO;
+        }
+        return emprestimo.getStatus();
+    }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.example.springboot.dtos.LivroRecordDto;
 import com.example.springboot.dtos.LivroResponseDto;
 import com.example.springboot.models.LivroModel;
@@ -29,45 +30,23 @@ public class LivroService {
         var livroModel = new LivroModel();
         BeanUtils.copyProperties(livroRecordDto, livroModel);
         LivroModel savedLivro = livroRepository.save(livroModel);
-        return new LivroResponseDto(
-            savedLivro.getIdLivro(),
-            savedLivro.getTitulo(),
-            savedLivro.getAutor(),
-            savedLivro.getEditora(), 
-            savedLivro.getDataPublicacao(),
-            savedLivro.getGenero()
-        );
+        return converterParaResponseDto(savedLivro);
     }
 
 
     // Método para listar todos os livro GET
     public List<LivroResponseDto> listaTodos() {
         return livroRepository.findAll().stream()
-            .map(livro -> new LivroResponseDto(
-                livro.getIdLivro(),
-                livro.getTitulo(),
-                livro.getAutor(),
-                livro.getEditora(),
-                livro.getDataPublicacao(),
-                livro.getGenero()
-            ))
+            .map(this::converterParaResponseDto)
             .collect(Collectors.toList());
     }
 
-    // Método para listar um livro GET
     public LivroResponseDto getLivroById(long id) {
         Optional<LivroModel> livroModelOptional = livroRepository.findById(id);
         if (!livroModelOptional.isPresent()) {
             throw new EntityNotFoundException("Livro com id " + id + " não encontrado");
         }
-        return new LivroResponseDto(
-            livroModelOptional.get().getIdLivro(),
-            livroModelOptional.get().getTitulo(),
-            livroModelOptional.get().getAutor(),
-            livroModelOptional.get().getEditora(),
-            livroModelOptional.get().getDataPublicacao(),
-            livroModelOptional.get().getGenero()
-        );
+      return converterParaResponseDto(livroModelOptional.get());
     }
 
     // Método para atualizar um livro PUT
@@ -79,14 +58,7 @@ public class LivroService {
         LivroModel livroModel = livroModelOptional.get();
         BeanUtils.copyProperties(livroRecordDto, livroModel);
         LivroModel updatedLivro = livroRepository.save(livroModel);
-        return new LivroResponseDto(
-            updatedLivro.getIdLivro(),
-            updatedLivro.getTitulo(),
-            updatedLivro.getAutor(),
-            updatedLivro.getEditora(),
-            updatedLivro.getDataPublicacao(),
-            updatedLivro.getGenero()
-        );
+        return converterParaResponseDto(updatedLivro);
     }
 
     // Método para deletar um livro DELETE
@@ -96,6 +68,18 @@ public class LivroService {
             throw new EntityNotFoundException("Livro com id " + id + " não encontrado");
         }
         livroRepository.delete(livroModelOptional.get());
+    }
+
+    private LivroResponseDto converterParaResponseDto(LivroModel l) {
+    return new LivroResponseDto(
+        l.getIdLivro(),
+        l.getTitulo(),
+        l.getAutor(),
+        l.getEditora(),
+        l.getDataPublicacao(),
+        l.getGenero(),
+        l.getQuantidade()
+    );
     }
 
     

@@ -9,7 +9,8 @@ public record LivroResponseDto(
     String autor,
     String editora,
     LocalDate dataPublicacao,
-    String genero
+    String genero,
+    Integer quantidade
 ) {
 }
 

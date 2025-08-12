@@ -34,6 +34,7 @@ public class LivroModel implements Serializable {
     private LocalDate dataPublicacao;
     private String editora;
     private String genero;
+    private Integer quantidade;
 
     @OneToMany (mappedBy = "livro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EmprestimoModel> emprestimos;

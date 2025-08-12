@@ -32,7 +32,7 @@ public class EmprestimoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/devolver/{id}")
+    @PutMapping("/emprestimo/devolver/{id}")
     public ResponseEntity<EmprestimoResponseDto> devolver(@PathVariable Long id) {
         var response = emprestimoService.marcarComoDevolvido(id);
         return ResponseEntity.ok(response);
@@ -43,17 +43,17 @@ public class EmprestimoController {
         return ResponseEntity.ok(emprestimoService.listarTodos());
     }
 
-    @GetMapping("/emprestados")
+    @GetMapping("/emprestimo/emprestados")
     public ResponseEntity<List<EmprestimoResponseDto>> listarEmprestados() {
         return ResponseEntity.ok(emprestimoService.listarPorStatus(EmprestimoStatus.EMPRESTADO));
     }
 
-    @GetMapping("/devolvidos")
+    @GetMapping("/emprestimo/devolvidos")
     public ResponseEntity<List<EmprestimoResponseDto>> listarDevolvidos() {
         return ResponseEntity.ok(emprestimoService.listarPorStatus(EmprestimoStatus.DEVOLVIDO));
     }
 
-    @GetMapping("/atrasados")
+    @GetMapping("/emprestimo/atrasados")
     public ResponseEntity<List<EmprestimoResponseDto>> listarAtrasados() {
         return ResponseEntity.ok(emprestimoService.listarPorStatus(EmprestimoStatus.ATRASADO));
     }
