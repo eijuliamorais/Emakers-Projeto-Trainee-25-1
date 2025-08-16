@@ -8,7 +8,7 @@ import io.micrometer.common.lang.NonNull;
 
 public record EmprestimoRecordDto(
     @NonNull Long idLivro,
-    @NonNull Long idPessoa,
+    Long idPessoa,
     LocalDate dataEmprestimo,
     LocalDate dataDevolucao,
     LocalDate previsaoDevolucao,

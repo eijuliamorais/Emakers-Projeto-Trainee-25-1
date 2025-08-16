@@ -9,9 +9,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import com.example.springboot.dtos.LivroRecordDto;
 import com.example.springboot.dtos.LivroResponseDto;
+import com.example.springboot.exception.ItemNaoEncontradoException;
 import com.example.springboot.models.LivroModel;
 import com.example.springboot.repositories.LivroRepository;
 
@@ -44,7 +44,7 @@ public class LivroService {
     public LivroResponseDto getLivroById(long id) {
         Optional<LivroModel> livroModelOptional = livroRepository.findById(id);
         if (!livroModelOptional.isPresent()) {
-            throw new EntityNotFoundException("Livro com id " + id + " não encontrado");
+            throw new ItemNaoEncontradoException("Livro com id " + id + " não encontrado");
         }
       return converterParaResponseDto(livroModelOptional.get());
     }
@@ -65,7 +65,7 @@ public class LivroService {
     public void deleteLivro(long id) {
         Optional<LivroModel> livroModelOptional = livroRepository.findById(id);
         if (!livroModelOptional.isPresent()) {
-            throw new EntityNotFoundException("Livro com id " + id + " não encontrado");
+            throw new ItemNaoEncontradoException("Livro com id " + id + " não encontrado");
         }
         livroRepository.delete(livroModelOptional.get());
     }

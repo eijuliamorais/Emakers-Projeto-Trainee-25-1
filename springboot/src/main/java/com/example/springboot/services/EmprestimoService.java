@@ -8,15 +8,18 @@ import org.springframework.stereotype.Service;
 
 import com.example.springboot.dtos.EmprestimoRecordDto;
 import com.example.springboot.dtos.EmprestimoResponseDto;
+import com.example.springboot.exception.ItemNaoEncontradoException;
 import com.example.springboot.models.EmprestimoModel;
 import com.example.springboot.models.LivroModel;
 import com.example.springboot.models.PessoaModel;
 import com.example.springboot.models.enums.EmprestimoStatus;
+import com.example.springboot.models.enums.PessoaCargo;
 import com.example.springboot.repositories.EmprestimoRepository;
 import com.example.springboot.repositories.LivroRepository;
 import com.example.springboot.repositories.PessoaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+
 
 @Service
 public class EmprestimoService {
@@ -29,11 +32,21 @@ public class EmprestimoService {
     private PessoaRepository pessoaRepository;
 
     // Método para salvar um empréstimo POST
-    public EmprestimoResponseDto criarEmprestimo(EmprestimoRecordDto dto) {
-        // Buscar pessoa
-        PessoaModel pessoa = pessoaRepository.findById(dto.idPessoa())
+    public EmprestimoResponseDto criarEmprestimo(EmprestimoRecordDto dto, PessoaModel usuarioLogado) {
+    PessoaModel pessoa;
+    
+    // Verificar se é admin usando o enum PessoaCargo
+    if (usuarioLogado.getCargo() == PessoaCargo.ADMIN) {
+        // Se for admin, pode cadastrar para outras pessoas
+        if (dto.idPessoa() == null) {
+            throw new IllegalArgumentException("Admin deve informar o ID da pessoa para o empréstimo");
+        }
+        pessoa = pessoaRepository.findById(dto.idPessoa())
             .orElseThrow(() -> new EntityNotFoundException("Pessoa não encontrada"));
-
+    } else {
+        // Se for user comum, usa automaticamente o ID do usuário logado
+        pessoa = usuarioLogado;
+    }
         // Buscar livro
         LivroModel livro = livroRepository.findById(dto.idLivro())
             .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado"));
@@ -64,7 +77,7 @@ public class EmprestimoService {
     // Método para devolver um livro PUT
     public EmprestimoResponseDto marcarComoDevolvido(Long id) {
     EmprestimoModel emprestimo = emprestimoRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
+        .orElseThrow(() -> new ItemNaoEncontradoException("Empréstimo não encontrado"));
 
     emprestimo.setDataDevolucao(LocalDate.now());
     emprestimo.setStatus(EmprestimoStatus.DEVOLVIDO);
@@ -85,7 +98,7 @@ public class EmprestimoService {
     }
 
     public List<EmprestimoResponseDto> listarPorStatus(EmprestimoStatus status) {
-    return emprestimoRepository.findByStatus(status).stream()
+    return emprestimoRepository.findAll().stream()
         .filter(e -> calcularStatusAtual(e) == status)
         .map(this::converterParaResponseDto)
         .toList();
@@ -93,7 +106,7 @@ public class EmprestimoService {
 
     public EmprestimoResponseDto buscarPorId(Long id) {
     EmprestimoModel emprestimo = emprestimoRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Empréstimo não encontrado"));
+        .orElseThrow(() -> new ItemNaoEncontradoException("Empréstimo não encontrado"));
 
     return converterParaResponseDto(emprestimo);
     }
